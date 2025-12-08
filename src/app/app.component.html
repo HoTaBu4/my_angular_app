@@ -15,7 +15,7 @@
     </header>
 
     <section class="todoapp__main">
-      <div class="todo completed">
+      <div class="todo" [class.completed]="todo.completed" *ngFor="let todo of todos; let item = index">
         <label class="todo__status-label">
           <input
             type="checkbox"
@@ -24,68 +24,22 @@
           />
         </label>
 
-        <span class="todo__title">Completed Todo</span>
-
-        <button class="todo__remove">x</button>
-
-        <div class="modal overlay">
-          <div class="modal-background has-background-white-ter"></div>
-          <div class="loader"></div>
-        </div>
-      </div>
-
-      <div class="todo">
-        <label class="todo__status-label">
+        <form *ngIf="editing; else titleblock">
           <input
-            type="checkbox"
-            class="todo__status"
-          />
-        </label>
-
-        <span class="todo__title">Not Completed Todo</span>
-        <button class="todo__remove">x</button>
-
-        <div class="modal overlay">
-          <div class="modal-background has-background-white-ter"></div>
-          <div class="loader"></div>
-        </div>
-      </div>
-
-      <div class="todo">
-        <label class="todo__status-label">
-          <input
-            type="checkbox"
-            class="todo__status"
-          />
-        </label>
-
-        <form>
-          <input
-            type="text"
-            class="todo__title-field"
-            placeholder="Empty todo will be deleted"
-            value="Todo is being edited now"
+          type="text"
+          class="todo__title-field"
+          placeholder="Empty todo will be deleted"
+          value="Todo is being edited now"
           />
         </form>
+        
+        <ng-template #titleblock> 
+          <span class="todo__title">{{ todo.title }}</span>
+
+          <button class="todo__remove" (click)="todos.splice(item, 1)">x</button>
+        </ng-template>
 
         <div class="modal overlay">
-          <div class="modal-background has-background-white-ter"></div>
-          <div class="loader"></div>
-        </div>
-      </div>
-
-      <div class="todo">
-        <label class="todo__status-label">
-          <input
-            type="checkbox"
-            class="todo__status"
-          />
-        </label>
-
-        <span class="todo__title">Todo is being saved now</span>
-        <button class="todo__remove">x</button>
-
-        <div class="modal overlay is-active">
           <div class="modal-background has-background-white-ter"></div>
           <div class="loader"></div>
         </div>
