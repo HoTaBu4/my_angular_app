@@ -20,7 +20,8 @@
           <input
             type="checkbox"
             class="todo__status"
-            checked
+            checked="{{ todo.completed }}"
+            [(ngModel)]="todo.completed"
           />
         </label>
 
@@ -39,10 +40,10 @@
           <button class="todo__remove" (click)="todos.splice(item, 1)">x</button>
         </ng-template>
 
-        <div class="modal overlay">
+        <!-- <div class="modal overlay">
           <div class="modal-background has-background-white-ter"></div>
           <div class="loader"></div>
-        </div>
+        </div> -->
       </div>
     </section>
 
