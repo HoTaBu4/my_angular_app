@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormsModule, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { TodoComponent } from './components/todo/todo.component';
 import { Todo } from './types/todo';
@@ -20,36 +20,54 @@ const todos = [
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class AppComponent {
-  todos = todos;
+export class AppComponent implements OnInit {
+  _todos: Todo[] = [];
+  activeTodos: Todo[] = []
+
+  get todos() {
+    return this._todos
+  }
+
+  set todos ( todos: Todo[]) {
+    if (todos === this._todos) {
+      return
+    }
+
+    this._todos = todos
+    this.activeTodos = this._todos.filter(todo => !todo.completed)
+  }
 
   get activeTodosCount(): number {
-    return this.todos.filter(todo => !todo.completed).length;
+    return this._todos.filter(todo => !todo.completed).length;
+  }
+
+  ngOnInit(): void {
+    this._todos = todos
   }
 
   addTodo(newTitle: string) {
      const newTodo: Todo = {
-      id: this.todos.length + 1,
+      id: this._todos.length + 1,
       title: newTitle,
       completed: false
     }
 
-    this.todos = [...this.todos, newTodo];
+    this._todos = [...this._todos, newTodo];
   }
 
   renameTodo(id: number, title: string) {
-    this.todos = this.todos.map(todo => 
+    this._todos = this._todos.map(todo => 
       todo.id === id ? { ...todo, title } : todo
     );
   }
 
   toggleTodo(id: number) {
-    this.todos = this.todos.map(todo => 
+    this._todos = this._todos.map(todo => 
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
     );
   }
 
   deleteTodo(id: number) { 
-    this.todos = this.todos.filter(todo => todo.id !== id);
+    this._todos = this._todos.filter(todo => todo.id !== id);
   }
 }
