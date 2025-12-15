@@ -4,26 +4,26 @@
       type="checkbox"
       class="todo__status"
       checked="{{ todo.completed }}"
-      [(ngModel)]="todo.completed"
+      (change)="toggle.emit()"
     />
   </label>
 
   @if (editing) {
-    <form>
+    <form (ngSubmit)="save()">
       <input
-        #titlefield
+        #titleField
         type="text"
         class="todo__title-field"
         placeholder="Empty todo will be deleted"
         name="title"
-        value="Todo is being edited now"
-        [(ngModel)]="todo.title"
-        (mouseenter)="titlefield.focus()"
+        [(ngModel)]="title"
+        (mouseenter)="titleField.focus()"
         (keyup.escape)="editing = false"
+        (blur)="save()"
       />
     </form>
   } @else {
-    <span class="todo__title" (dblclick)="editing = true">{{ todo.title }}</span>
+    <span class="todo__title" (dblclick)="edit()">{{ todo.title }}</span>
     <button class="todo__remove" (click)="delete.emit()">x</button>
   }
 

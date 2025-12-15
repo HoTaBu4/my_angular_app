@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormsModule, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { TodoComponent } from './components/todo/todo.component';
 import { Todo } from './types/todo';
+import { TodoFormComponent } from "./components/todo-form/todo-form.component";
 
 const todos = [
   { id: 1, title: 'Learn Angular', completed: false },
@@ -13,47 +14,42 @@ const todos = [
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule ,TodoComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TodoComponent, TodoFormComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class AppComponent {
   todos = todos;
-  todoForm = new FormGroup({
-    title: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required, 
-        Validators.minLength(3)
-      ],
-    })
-  })
-
-  get title() {
-    return this.todoForm.get('title') as FormControl;
-  }
 
   get activeTodosCount(): number {
     return this.todos.filter(todo => !todo.completed).length;
   }
 
-  addTodo() {
-    if(this.title.invalid) {
-      return;
-    }
-
-    if(this.title.value.trim().length === 0) {
-      return;
-    }
-
-    const newToodo: Todo = {
+  addTodo(newTitle: string) {
+     const newTodo: Todo = {
       id: this.todos.length + 1,
-      title: this.title.value,
+      title: newTitle,
       completed: false
     }
 
-    this.todos.push(newToodo);
-    this.title.reset();
+    this.todos = [...this.todos, newTodo];
+  }
+
+  renameTodo(id: number, title: string) {
+    this.todos = this.todos.map(todo => 
+      todo.id === id ? { ...todo, title } : todo
+    );
+  }
+
+  toggleTodo(id: number) {
+    this.todos = this.todos.map(todo => 
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    );
+  }
+
+  deleteTodo(id: number) { 
+    this.todos = this.todos.filter(todo => todo.id !== id);
   }
 }
