@@ -1,15 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormsModule, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { TodoComponent } from './components/todo/todo.component';
 import { Todo } from './types/todo';
 import { TodoFormComponent } from "./components/todo-form/todo-form.component";
+import { todosService } from './services/todos.service';
+import { Subscription } from 'rxjs';
 
-const todos = [
-  { id: 1, title: 'Learn Angular', completed: false },
-  { id: 2, title: 'Build a Todo App', completed: true },
-  { id: 3, title: 'Master TypeScript', completed: false }
-]
 
 @Component({
   selector: 'app-root',
@@ -17,12 +14,12 @@ const todos = [
   imports: [CommonModule, FormsModule, ReactiveFormsModule, TodoComponent, TodoFormComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   _todos: Todo[] = [];
   activeTodos: Todo[] = []
+  private todosSub?: Subscription;
 
   get todos() {
     return this._todos
@@ -41,8 +38,19 @@ export class AppComponent implements OnInit {
     return this._todos.filter(todo => !todo.completed).length;
   }
 
+  constructor(
+    private todosService: todosService
+  ) {}
+
   ngOnInit(): void {
-    this._todos = todos
+    this.todosSub = this.todosService.getTodos().subscribe((todos) => {
+      console.log(todos)
+      this.todos = todos;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.todosSub?.unsubscribe();
   }
 
   addTodo(newTitle: string) {
