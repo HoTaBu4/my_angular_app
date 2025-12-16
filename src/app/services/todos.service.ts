@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Todo } from '../types/todo';
 
+
+const USER_ID = 100
 @Injectable({
   providedIn: 'root',
 })
@@ -13,6 +15,6 @@ export class todosService {
 
   }
   getTodos () {
-    return this.http.get<Todo[]>('https://jsonplaceholder.typicode.com/todos?_limit=10')
+    return this.http.get<Todo[]>(`https://mate.academy/students-api/todos?userId=${USER_ID}`)
   }
 }
