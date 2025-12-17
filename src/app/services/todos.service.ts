@@ -4,6 +4,7 @@ import { Todo } from '../types/todo';
 
 
 const USER_ID = 100
+const API_URL = 'https://mate.academy/students-api'
 @Injectable({
   providedIn: 'root',
 })
@@ -14,7 +15,16 @@ export class todosService {
   ) {
 
   }
+
   getTodos () {
-    return this.http.get<Todo[]>(`https://mate.academy/students-api/todos?userId=${USER_ID}`)
+    return this.http.get<Todo[]>(`${API_URL}/todos?userId=${USER_ID}`)
+  }
+
+  createTodo (title: string) {
+    return this.http.post<Todo>(`${API_URL}/todos`, {
+      title,
+      userId: USER_ID,
+      completed: false
+    })
   }
 }

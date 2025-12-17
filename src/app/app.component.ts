@@ -54,13 +54,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   addTodo(newTitle: string) {
-     const newTodo: Todo = {
-      id: this._todos.length + 1,
-      title: newTitle,
-      completed: false
-    }
-
-    this._todos = [...this._todos, newTodo];
+    this.todosService.createTodo(newTitle)
+      .subscribe((newTodo) => {
+        this._todos = [...this._todos, newTodo];
+      });
   }
 
   renameTodo(id: number, title: string) {
